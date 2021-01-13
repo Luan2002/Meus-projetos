@@ -1,0 +1,23 @@
+#include <iostream>
+#include <stdlib.h>
+
+using namespace std;
+
+int main()
+{
+    int num1, num2, idade;
+        cout << "Bem vindo ao relembre sua Idade" << endl;
+        cout <<"Digite o ano atual: " <<endl;
+        cin >> num1;
+        cout <<"Digite o seu ano de nascença:" <<endl;
+        cin >> num2;
+
+        idade   = num1 - num2;
+
+
+        cout <<"A sua idade e: " << idade <<endl;
+
+
+        system("Pause");
+    return 0;
+}
