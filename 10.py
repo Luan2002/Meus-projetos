@@ -1,0 +1,28 @@
+print("=="*15)
+print("CALCULADORA TESTE BY Luan")
+print("=="*15)
+print("Qual seu nome? ")
+nome = input("")
+print("Qual a sua idade?")
+idade = input("")
+print(f"{nome} nasceu em {2020 - int(idade)}")
+print(f"Okay {nome}, seja muito Bem- Vindo!")
+print("Digite um número ")
+n1 = int(input(""))
+print("Agora, digite o segundo número: ")
+n2 = int(input(""))
+print("Qual operação você deseja usar? (+, -, x ou ÷) ")
+op = input("")
+if op == "+":
+  print(n1, "+", n2, "=", n1 + n2, "é o resultado desta operação")
+elif op == "-":
+  print(n1, "-", n2, "=", n1 - n2, "é o resultado desta operação")
+elif op == "x":
+  print(n1, "x", n2, "=", n1 * n2, "é o resultado desta operação")
+elif op == "÷":
+  print(n1, "÷", n2, "=", n1 / n2, "é o resultado desta operação")
+else:
+  print("Error")
+print("--"*30)
+print(f"Obrigado por testar minha calculadora {nome}, volte sempre!")
+print("--"*30)
