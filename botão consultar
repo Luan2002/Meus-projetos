@@ -1,0 +1,110 @@
+@SuppressWarnings("unchecked")
+	@Override
+	public void buttonClick(ClickEvent event) {
+		try {
+			if (event.getButton().equals(btnConsultar)) {
+				if (cpCenario.getLogical() == null) {
+					AppData.showError("Necessário selecionar um cenário!");
+					return;
+				}
+				
+				
+				AppData.getMainWindow().addWindow(new BackgroundTaskWin("Carregar Mapa", "Carregando mapa, aguarde...", null,
+				"Erro ao executar!", new IBCallable<Void>() {
+					@Override
+					public Void callFunction() throws Exception {
+						try {
+							carregarMapa();
+							carregarLegendaTabela();
+							btnCapturarTela.setEnabled(true);							
+						} catch (Exception e) {
+							e.printStackTrace();
+							AppData.showError(e);
+						}
+						return null;
+					}
+				}));
+				
+
+			} else if (event.getButton().equals(btnResumoGeral)) {
+				if (mapTemp == null || mapTemp.size() == 0) {
+					AppData.showError("Não há dados a serem exportados!");
+					return;
+				}
+
+				List<String> listIBGE = new ArrayList<String>();
+				for (String siglaUF : mapTemp.keySet() ) {
+					listIBGE.addAll(mapTemp.get(siglaUF).getMunicipios().keySet());
+				}
+				
+				List<String> colecoes = cpColecao.getSelectedsList();
+				List<String> linhas = cpLinha.getSelectedsList();
+				List<String> marcas = cpMarca.getSelectedsList();
+				List<String> representantes = cpRepresentante.getSelectedsList();
+				
+				SMCenario cenario = (SMCenario) BeanController.openById(SMCenario.class,
+						cpCenario.getLogical().toString());
+				
+
+				SMCenarioQueryWin represMunicipio = new SMCenarioQueryWin(null, listIBGE, colecoes, linhas, marcas, representantes, camposCoringa, cenario);
+				AppData.getMainWindow().addWindow(represMunicipio);
+
+			} else if (event.getButton().equals(btnMaximizar)) {
+				if (cpCenario.getLogical() == null) {
+					AppData.showError("Necessário selecionar um cenário!");
+					return;
+				}
+				popupMapa = new SMMaximizarMapaPopup(map);
+				popupMapa.setModal(true);
+				popupMapa.addListener((CloseListener) this);
+				AppData.getMainWindow().addWindow(popupMapa);
+
+			} else if (event.getButton().equals(btnDetalharTodasRegioes)) {
+				if (cpCenario.getLogical() == null || mapTemp.isEmpty()) {
+					AppData.showError("Necessário selecionar um cenário!");
+					return;
+				}
+
+				List<String> listMuniciopios = new ArrayList<>();
+				SMCenario cenario = (SMCenario) BeanController.openById(SMCenario.class,
+						cpCenario.getLogical().toString());
+
+				List<SMCenarioRegiao> listSMCenarioRegiao = (List<SMCenarioRegiao>) SMCenarioRegiao.loadByParameter(
+						SMCenarioRegiao.LER_TODAS_REGIOES_DE_UM_CENARIO, SMCenarioRegiao.class,
+						ParamsMapFactory.create(cenario.getId()));
+				for (SMCenarioRegiao smCenarioRegiao : listSMCenarioRegiao) {
+					List<String> listUfs = smCenarioRegiao.getListUfs();
+					for (String siglaUF : listUfs) {
+						List<String> listEncontrada = mapTemp.get(siglaUF).getMapRegiaoMunicipios()
+								.get(cenario.getId());
+						if (listEncontrada != null && listEncontrada.isEmpty() == false) {
+							listMuniciopios.addAll(listEncontrada);
+						}
+					}
+				}
+
+				List<String> colecoes = cpColecao.getSelectedsList();
+				List<String> linhas = cpLinha.getSelectedsList();
+				List<String> marcas = cpMarca.getSelectedsList();
+				List<String> representantes = cpRepresentante.getSelectedsList();
+				List<String> ufs = cenario.getUFs();
+
+				SMCenarioQueryWin represMunicipio = new SMCenarioQueryWin(ufs, listMuniciopios, colecoes, linhas, marcas, representantes, camposCoringa, cenario, null);
+				AppData.getMainWindow().addWindow(represMunicipio);
+
+			} else if (event.getButton().equals(btnCapturarTela)) {
+				winScreenshot = new VendasMapaScreenShopPopupPanel(pnLegendaAux, map);
+				winScreenshot.addListener((CloseListener) this);
+				winScreenshot.setModal(true);
+				this.getWindow().addWindow(winScreenshot);
+			} else if (event.getButton().equals(btnNovoCenario)) {
+				winCadastroCenario = new SMCadastroPopUp();
+				winCadastroCenario.addListener((CloseListener) this);
+				winCadastroCenario.setModal(true);
+				AppData.getMainWindow().addWindow(winCadastroCenario);
+			}
+
+		} finally {
+			event.getButton().setEnabled(true);
+		}
+	}
