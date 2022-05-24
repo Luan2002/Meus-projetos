@@ -1,0 +1,23 @@
+private Component getTabResultados() {
+		VerticalLayout vl0 = new VerticalLayout();
+		vl0.setWidth(100, Sizeable.UNITS_PERCENTAGE);
+		vl0.setHeight(100, Sizeable.UNITS_PERCENTAGE);
+		vl0.setSpacing(true);
+		vl0.setMargin(true);
+		
+		VerticalLayout vlFiltros = new VerticalLayout();
+		vlFiltros.setSpacing(true);
+		vlFiltros.setMargin(true);
+
+	
+		
+		
+		VerticalLayout vlLegenda = new VerticalLayout();
+		vlLegenda.setSpacing(true);
+		vlLegenda.setSizeUndefined();
+
+		Panel pnLegenda = new Panel("Legenda", vlLegenda);
+		pnLegenda.setSizeFull();
+		vl0.addComponent(pnLegenda);
+		vl0.setExpandRatio(pnLegenda, 2f);
+		return vl0;
